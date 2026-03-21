@@ -1,0 +1,33 @@
+{
+  "roles": {
+    "admin": {
+      "can_modify": true,
+      "manage_users": true,
+      "manage_roles": true
+    },
+    "user": {
+      "can_modify": false,
+      "manage_users": false,
+      "manage_roles": false
+    },
+    "testuser": {
+      "can_modify": false,
+      "manage_users": true,
+      "manage_roles": true
+    }
+  },
+  "users": {
+    "admin": {
+      "password_hash": "fe5f545877786858c59393121cdea81956ae6b7caf57e24f9a4d3a7903f81b61",
+      "role": "admin"
+    },
+    "u_readonly": {
+      "password_hash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
+      "role": "user"
+    },
+    "zhangwei": {
+      "password_hash": "36135da9586652aa0bdefee628001c4c4eb6901e278a44233a23cd2811eadc19",
+      "role": "admin"
+    }
+  }
+}
