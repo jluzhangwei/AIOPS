@@ -17,14 +17,73 @@ else
 fi
 DB_ENV_FILE_PATH="${DB_ENV_FILE:-$DB_ENV_FILE_DEFAULT}"
 
-VENV_PY="$BASE_DIR/../.venv/bin/python"
-if [[ -x "$VENV_PY" ]]; then
-  PYTHON_BIN="$VENV_PY"
-else
-  PYTHON_BIN="${PYTHON_BIN:-python3}"
-fi
+DEFAULT_VENV_DIR="$BASE_DIR/../.venv"
 
-PIP_BIN="${PYTHON_BIN} -m pip"
+command_exists() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+is_python_compatible() {
+  local py="$1"
+  "$py" - <<'PY' >/dev/null 2>&1
+import sys
+raise SystemExit(0 if sys.version_info >= (3, 10) else 1)
+PY
+}
+
+resolve_python_bin() {
+  local explicit_py="${PYTHON_BIN:-}"
+  local candidate
+
+  if [[ -n "$explicit_py" ]]; then
+    echo "$explicit_py"
+    return 0
+  fi
+
+  for candidate in \
+    "$BASE_DIR/.venv/bin/python" \
+    "$DEFAULT_VENV_DIR/bin/python" \
+    python3.13 \
+    python3.12 \
+    python3.11 \
+    python3.10 \
+    python3
+  do
+    if [[ "$candidate" == */* ]]; then
+      [[ -x "$candidate" ]] || continue
+    else
+      command_exists "$candidate" || continue
+    fi
+
+    if is_python_compatible "$candidate"; then
+      echo "$candidate"
+      return 0
+    fi
+  done
+
+  echo "python3"
+}
+
+refresh_pip_bin() {
+  PIP_BIN="${PYTHON_BIN} -m pip"
+}
+
+ensure_venv() {
+  if [[ -x "$DEFAULT_VENV_DIR/bin/python" ]]; then
+    PYTHON_BIN="$DEFAULT_VENV_DIR/bin/python"
+    refresh_pip_bin
+    return 0
+  fi
+
+  echo "Creating virtual environment: $DEFAULT_VENV_DIR"
+  "$PYTHON_BIN" -m venv "$DEFAULT_VENV_DIR"
+  PYTHON_BIN="$DEFAULT_VENV_DIR/bin/python"
+  refresh_pip_bin
+}
+
+PYTHON_BIN="$(resolve_python_bin)"
+PIP_BIN=""
+refresh_pip_bin
 ACTION="${1:-start}"
 
 print_header() {
@@ -99,6 +158,12 @@ check_env() {
     exit 1
   fi
 
+  if ! is_python_compatible "$PYTHON_BIN"; then
+    echo "ERROR: Python 3.10+ is required. Current interpreter: $PYTHON_BIN"
+    "$PYTHON_BIN" --version || true
+    exit 1
+  fi
+
   if [[ ! -f "$DB_ENV_FILE_PATH" ]]; then
     echo "WARN : DB env file not found: $DB_ENV_FILE_PATH"
     echo "       You can create it from: $BASE_DIR/.env.mysql.example"
@@ -124,6 +189,9 @@ check_env() {
   done
 
   if [[ "$missing" -eq 1 ]]; then
+    if [[ "$PYTHON_BIN" != "$DEFAULT_VENV_DIR/bin/python" ]]; then
+      ensure_venv
+    fi
     echo "Installing missing modules: fastapi uvicorn pymysql"
     $PIP_BIN install fastapi uvicorn pymysql
   fi

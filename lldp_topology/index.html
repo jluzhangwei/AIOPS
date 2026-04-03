@@ -560,7 +560,7 @@
         <div class="row inline">
           <button id="clearUtilCache" type="button">删除链路缓存</button>
         </div>
-        <div class="hint" id="cleanupHint">删除临时数据会清空服务器上的临时 CSV、调试日志、状态快照和服务日志；删除连接配置只清空当前浏览器保存的 SQL / CLI / Zabbix 配置。</div>
+        <div class="hint" id="cleanupHint">删除临时数据会清空服务器上的临时 CSV、调试日志、状态快照和服务日志；删除连接配置只清空当前浏览器保存的连接配置。</div>
       </div>
       </div>
     </div>
@@ -1089,7 +1089,7 @@
       cleanup_group_title: '清理',
       btn_clear_temp_data: '删除临时数据',
       btn_clear_connection_prefs: '删除连接配置',
-      cleanup_hint: '删除临时数据会清空服务器上的临时 CSV、调试日志、状态快照和服务日志；删除连接配置只清空当前浏览器保存的 SQL / CLI / Zabbix 配置。',
+      cleanup_hint: '删除临时数据会清空服务器上的临时 CSV、调试日志、状态快照和服务日志；删除连接配置只清空当前浏览器保存的连接配置。',
       btn_cli_util: 'CLI 链路利用率',
       btn_zbx_util: 'Zabbix链路利用率',
       btn_zbx_config: 'Zabbix配置',
@@ -1208,7 +1208,7 @@
       cleanup_group_title: 'Cleanup',
       btn_clear_temp_data: 'Delete Temp Data',
       btn_clear_connection_prefs: 'Delete Connection Config',
-      cleanup_hint: 'Delete Temp Data clears server-side temp CSV/debug/state/log files; Delete Connection Config clears only browser-stored SQL/CLI/Zabbix settings.',
+      cleanup_hint: 'Delete Temp Data clears server-side temp CSV/debug/state/log files; Delete Connection Config clears only browser-stored connection settings.',
       btn_cli_util: 'CLI Link Utilization',
       btn_zbx_util: 'Zabbix Link Utilization',
       btn_zbx_config: 'Zabbix Config',
@@ -6788,7 +6788,7 @@
   }
 
   async function clearConnectionPrefs() {
-    if (!confirm('确认删除当前浏览器保存的连接配置？这会清空 SQL、CLI 与 Zabbix 的本地保存项。')) return;
+    if (!confirm('确认删除当前浏览器保存的连接配置？这会清空当前浏览器里的本地保存项。')) return;
     try {
       localStorage.removeItem(SQL_PREF_KEY);
       localStorage.removeItem(CLI_PREF_KEY);
@@ -7507,7 +7507,7 @@
 
   function openImportModal(action = 'import') {
     importInputAction = action === 'append' ? 'append' : 'import';
-    const mode = $('importMode')?.value || 'sql';
+    const mode = $('importMode')?.value || 'csv';
     if (mode === 'json') {
       $('importSessionFile').value = '';
       $('importSessionFile').click();
@@ -8614,10 +8614,10 @@
   $('ctxAppendQuery').addEventListener('click', async () => {
     const nodes = ctxNodes().filter((n) => !n.data('isGroup'));
     if (!nodes.length) return hideCtx();
-    const mode = ($('importMode')?.value || 'sql').toLowerCase();
+    const mode = ($('importMode')?.value || 'csv').toLowerCase();
 
     if (mode === 'csv') {
-      setErr('CSV 模式不支持右键追加查询，请切换为 SQL 或 CLI。');
+      setErr('CSV 模式不支持右键追加查询，请切换为 CLI。');
       return hideCtx();
     }
 
