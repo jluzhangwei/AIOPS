@@ -1,0 +1,109 @@
+[ 6396778ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:5173/favicon.ico:0
+[ 8942322ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:5173/:0
+[ 8943325ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:5173/:0
+[ 8944328ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:5173/:0
+[ 8945332ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:5173/:0
+[ 9508454ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:5173/src/App.tsx?t=1774605085064:0
+[ 9508454ms] [ERROR] [hmr] Failed to reload /src/App.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://127.0.0.1:5173/@vite/client:175
+[ 9575956ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:5173/src/App.tsx?t=1774605152585:0
+[ 9575958ms] [ERROR] [hmr] Failed to reload /src/App.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://127.0.0.1:5173/@vite/client:175
+[ 9695395ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:5173/src/App.tsx?t=1774605272028:0
+[ 9695395ms] [ERROR] [hmr] Failed to reload /src/App.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://127.0.0.1:5173/@vite/client:175
+[ 9844053ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:5173/src/App.tsx?t=1774605420682:0
+[ 9844054ms] [ERROR] [hmr] Failed to reload /src/App.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://127.0.0.1:5173/@vite/client:175
+[ 9859749ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:5173/src/App.tsx?t=1774605436383:0
+[ 9859750ms] [ERROR] [hmr] Failed to reload /src/App.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://127.0.0.1:5173/@vite/client:175
+[10268720ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:5173/src/App.tsx?t=1774605845350:0
+[10268720ms] [ERROR] [hmr] Failed to reload /src/App.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://127.0.0.1:5173/@vite/client:175
+[10273381ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://127.0.0.1:5173/src/App.tsx?t=1774605850022:0
+[10273383ms] [ERROR] [hmr] Failed to reload /src/App.tsx. This could be due to syntax errors or importing non-existent modules. (see errors above) @ http://127.0.0.1:5173/@vite/client:175
+[10343972ms] ReferenceError: getMaxTraceSeqNo is not defined
+    at http://127.0.0.1:5173/src/App.tsx?t=1774605920425:728:5
+    at commitHookEffectListMount (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:16913:34)
+    at commitPassiveMountOnFiber (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18154:19)
+    at commitPassiveMountEffects_complete (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18127:17)
+    at commitPassiveMountEffects_begin (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18117:15)
+    at commitPassiveMountEffects (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18107:11)
+    at flushPassiveEffectsImpl (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19488:11)
+    at flushPassiveEffects (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19445:22)
+    at commitRootImpl (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19414:13)
+    at commitRoot (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19275:13)
+[10343975ms] ReferenceError: getMaxTraceSeqNo is not defined
+    at http://127.0.0.1:5173/src/App.tsx?t=1774605920425:728:5
+    at commitHookEffectListMount (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:16913:34)
+    at invokePassiveEffectMountInDEV (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18322:19)
+    at invokeEffectsInDev (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19699:19)
+    at commitDoubleInvokeEffectsInDEV (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19684:15)
+    at flushPassiveEffectsImpl (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19501:13)
+    at flushPassiveEffects (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19445:22)
+    at commitRootImpl (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19414:13)
+    at commitRoot (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19275:13)
+    at performSyncWorkOnRoot (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18893:11)
+[10343976ms] [ERROR] The above error occurred in the <App> component:
+
+    at App (http://127.0.0.1:5173/src/App.tsx?t=1774605920425:87:49)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:14029
+[10343976ms] [ERROR] The above error occurred in the <App> component:
+
+    at App (http://127.0.0.1:5173/src/App.tsx?t=1774605920425:87:49)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:14029
+[10343977ms] ReferenceError: getMaxTraceSeqNo is not defined
+    at http://127.0.0.1:5173/src/App.tsx?t=1774605920425:728:5
+    at commitHookEffectListMount (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:16913:34)
+    at commitPassiveMountOnFiber (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18154:19)
+    at commitPassiveMountEffects_complete (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18127:17)
+    at commitPassiveMountEffects_begin (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18117:15)
+    at commitPassiveMountEffects (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18107:11)
+    at flushPassiveEffectsImpl (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19488:11)
+    at flushPassiveEffects (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19445:22)
+    at commitRootImpl (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19414:13)
+    at commitRoot (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19275:13)
+[10353428ms] ReferenceError: getMaxTraceSeqNo is not defined
+    at http://127.0.0.1:5173/src/App.tsx?t=1774605929765:728:5
+    at commitHookEffectListMount (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:16913:34)
+    at commitPassiveMountOnFiber (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18154:19)
+    at commitPassiveMountEffects_complete (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18127:17)
+    at commitPassiveMountEffects_begin (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18117:15)
+    at commitPassiveMountEffects (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18107:11)
+    at flushPassiveEffectsImpl (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19488:11)
+    at flushPassiveEffects (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19445:22)
+    at commitRootImpl (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19414:13)
+    at commitRoot (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19275:13)
+[10353430ms] ReferenceError: getMaxTraceSeqNo is not defined
+    at http://127.0.0.1:5173/src/App.tsx?t=1774605929765:728:5
+    at commitHookEffectListMount (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:16913:34)
+    at invokePassiveEffectMountInDEV (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18322:19)
+    at invokeEffectsInDev (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19699:19)
+    at commitDoubleInvokeEffectsInDEV (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19684:15)
+    at flushPassiveEffectsImpl (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19501:13)
+    at flushPassiveEffects (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19445:22)
+    at commitRootImpl (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19414:13)
+    at commitRoot (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19275:13)
+    at performSyncWorkOnRoot (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18893:11)
+[10353431ms] [ERROR] The above error occurred in the <App> component:
+
+    at App (http://127.0.0.1:5173/src/App.tsx?t=1774605929765:87:49)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:14029
+[10353431ms] [ERROR] The above error occurred in the <App> component:
+
+    at App (http://127.0.0.1:5173/src/App.tsx?t=1774605929765:87:49)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:14029
+[10353433ms] ReferenceError: getMaxTraceSeqNo is not defined
+    at http://127.0.0.1:5173/src/App.tsx?t=1774605929765:728:5
+    at commitHookEffectListMount (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:16913:34)
+    at commitPassiveMountOnFiber (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18154:19)
+    at commitPassiveMountEffects_complete (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18127:17)
+    at commitPassiveMountEffects_begin (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18117:15)
+    at commitPassiveMountEffects (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:18107:11)
+    at flushPassiveEffectsImpl (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19488:11)
+    at flushPassiveEffects (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19445:22)
+    at commitRootImpl (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19414:13)
+    at commitRoot (http://127.0.0.1:5173/node_modules/.vite/deps/chunk-XPR23Y44.js?v=bdd18f4d:19275:13)
