@@ -70,87 +70,19 @@ SERVICES: dict[str, ServiceConfig] = {
         restart_cmd=("./start_lldp_service.sh", "restart"),
         stop_cmd=("./start_lldp_service.sh", "stop"),
     ),
-    "netlog": ServiceConfig(
-        service_id="netlog",
-        name="Netlog Analyst",
-        subtitle="网络日志提取与 AI 分析",
-        port=8000,
+    "netops": ServiceConfig(
+        service_id="netops",
+        name="NetOps AI V2",
+        subtitle="对话式网络设备故障排查平台",
+        port=5173,
         open_path="/",
         internal_host="127.0.0.1",
-        start_cmd=("./run.sh",),
-        cwd=WORKSPACE_ROOT / "netlog_extractor",
+        start_cmd=("./start_netops.sh", "start"),
+        cwd=WORKSPACE_ROOT / "netops-ai-v1",
         start_mode="daemon",
-        startup_wait_seconds=4.0,
-        restart_cmd=(
-            "bash",
-            "-lc",
-            "pids=$(lsof -tiTCP:8000 -sTCP:LISTEN 2>/dev/null || true); "
-            "if [ -n \"$pids\" ]; then kill $pids 2>/dev/null || true; sleep 1; fi; "
-            "pids2=$(lsof -tiTCP:8000 -sTCP:LISTEN 2>/dev/null || true); "
-            "if [ -n \"$pids2\" ]; then kill -9 $pids2 2>/dev/null || true; sleep 1; fi; "
-            "exec ./run.sh",
-        ),
-        stop_cmd=(
-            "bash",
-            "-lc",
-            "pids=$(lsof -tiTCP:8000 -sTCP:LISTEN 2>/dev/null || true); "
-            "if [ -n \"$pids\" ]; then kill $pids 2>/dev/null || true; sleep 1; fi; "
-            "pids2=$(lsof -tiTCP:8000 -sTCP:LISTEN 2>/dev/null || true); "
-            "if [ -n \"$pids2\" ]; then kill -9 $pids2 2>/dev/null || true; sleep 1; fi; "
-            "exit 0",
-        ),
-    ),
-    "netclaw": ServiceConfig(
-        service_id="netclaw",
-        name="NetClaw",
-        subtitle="网络诊断与 AI 交互分析",
-        port=8001,
-        open_path="/",
-        internal_host="127.0.0.1",
-        start_cmd=("./run.sh",),
-        cwd=WORKSPACE_ROOT / "netdiag",
-        start_mode="daemon",
-        startup_wait_seconds=4.0,
-        restart_cmd=(
-            "bash",
-            "-lc",
-            "pids=$(lsof -tiTCP:8001 -sTCP:LISTEN 2>/dev/null || true); "
-            "if [ -n \"$pids\" ]; then kill $pids 2>/dev/null || true; sleep 1; fi; "
-            "pids2=$(lsof -tiTCP:8001 -sTCP:LISTEN 2>/dev/null || true); "
-            "if [ -n \"$pids2\" ]; then kill -9 $pids2 2>/dev/null || true; sleep 1; fi; "
-            "exec ./run.sh",
-        ),
-        stop_cmd=(
-            "bash",
-            "-lc",
-            "pids=$(lsof -tiTCP:8001 -sTCP:LISTEN 2>/dev/null || true); "
-            "if [ -n \"$pids\" ]; then kill $pids 2>/dev/null || true; sleep 1; fi; "
-            "pids2=$(lsof -tiTCP:8001 -sTCP:LISTEN 2>/dev/null || true); "
-            "if [ -n \"$pids2\" ]; then kill -9 $pids2 2>/dev/null || true; sleep 1; fi; "
-            "exit 0",
-        ),
-    ),
-    "healthcheck": ServiceConfig(
-        service_id="healthcheck",
-        name="HealthCheck Runner",
-        subtitle="设备巡检任务执行与报告",
-        port=8080,
-        open_path="/",
-        internal_host="127.0.0.1",
-        start_cmd=("./run.sh", "--no-reload"),
-        cwd=WORKSPACE_ROOT / "healthcheck",
-        start_mode="daemon",
-        startup_wait_seconds=4.0,
-        restart_cmd=("./run.sh", "--no-reload"),
-        stop_cmd=(
-            "bash",
-            "-lc",
-            "pids=$(lsof -tiTCP:8080 -sTCP:LISTEN 2>/dev/null || true); "
-            "if [ -n \"$pids\" ]; then kill $pids 2>/dev/null || true; sleep 1; fi; "
-            "pids2=$(lsof -tiTCP:8080 -sTCP:LISTEN 2>/dev/null || true); "
-            "if [ -n \"$pids2\" ]; then kill -9 $pids2 2>/dev/null || true; sleep 1; fi; "
-            "exit 0",
-        ),
+        startup_wait_seconds=20.0,
+        restart_cmd=("./start_netops.sh", "restart"),
+        stop_cmd=("./start_netops.sh", "stop"),
     ),
 }
 
@@ -665,6 +597,7 @@ async def login_page(request: Request):
     next_path = _safe_next_path((request.query_params.get("next") or "/").strip())
     status = (request.query_params.get("msg") or "").strip()
     return templates.TemplateResponse(
+        request,
         "login.html",
         {"request": request, "next_path": next_path, "status": status},
     )
@@ -688,6 +621,7 @@ async def login_submit(
     user_item = users.get(username)
     if not isinstance(user_item, dict) or str(user_item.get("password_hash", "")) != _hash_password(password):
         return templates.TemplateResponse(
+            request,
             "login.html",
             {
                 "request": request,
@@ -736,6 +670,7 @@ async def admin_page(request: Request):
     users = db.get("users", {}) if isinstance(db.get("users", {}), dict) else {}
     msg = (request.query_params.get("msg") or "").strip()
     return templates.TemplateResponse(
+        request,
         "admin.html",
         {
             "request": request,
@@ -824,6 +759,7 @@ async def home(request: Request):
 
     cards = [serialize_status(svc, request) for svc in SERVICES.values()]
     return templates.TemplateResponse(
+        request,
         "index.html",
         {
             "request": request,

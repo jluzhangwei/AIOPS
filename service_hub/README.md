@@ -1,10 +1,9 @@
 # SEA NOC Service Hub
 
-统一管理以下三个服务的启动入口：
+统一管理以下两个服务的启动入口：
 
 - LLDP Topology: `http://127.0.0.1:18080/lldp.html`
-- Netlog Analyst: `http://127.0.0.1:8000/`
-- HealthCheck Runner: `http://127.0.0.1:8080/`
+- NetOps AI V2: `http://127.0.0.1:5173/`
 
 ## 启动
 
@@ -37,7 +36,7 @@ cd /Users/zhangwei/python/service_hub
 ## 页面能力
 
 - 统一两层导航外观（SEA NOC 样式）
-- 三个服务 Icon 卡片
+- 两个服务 Icon 卡片
 - 点击卡片后：
   - 后端执行对应服务启动命令
   - 前端自动打开服务 URL
