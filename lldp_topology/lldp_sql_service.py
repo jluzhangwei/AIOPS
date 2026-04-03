@@ -51,6 +51,7 @@ TMP_DIR.mkdir(parents=True, exist_ok=True)
 STATE_DIR = BASE_DIR / "state_snapshots"
 STATE_DIR.mkdir(parents=True, exist_ok=True)
 STATE_LIMIT = int(os.getenv("LLDP_STATE_LIMIT", "15") or "15")
+ZABBIX_CONFIG_FILE = BASE_DIR / "zabbix_config.json"
 LINK_UTIL_CACHE_FILE = TMP_DIR / "link_util_cache.csv"
 LINK_UTIL_CACHE_FIELDS = [
     "util_key",
@@ -84,6 +85,60 @@ ZABBIX_URL_DEFAULT = ""
 ZABBIX_API_TOKEN_DEFAULT = ""
 
 
+class ZabbixConfigSaveRequest(BaseModel):
+    url: str = ""
+    api_token: str = ""
+    verify_ssl: bool = False
+
+
+def _read_saved_zabbix_config() -> dict[str, Any]:
+    if not ZABBIX_CONFIG_FILE.exists():
+        return {}
+    try:
+        raw = json.loads(ZABBIX_CONFIG_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    if not isinstance(raw, dict):
+        return {}
+    return {
+        "url": str(raw.get("url", "") or "").strip(),
+        "api_token": str(raw.get("api_token", "") or "").strip(),
+        "verify_ssl": bool(raw.get("verify_ssl", False)),
+    }
+
+
+def _effective_zabbix_config() -> dict[str, Any]:
+    saved = _read_saved_zabbix_config()
+    url = str(saved.get("url") or get_env("ZABBIX_URL", ZABBIX_URL_DEFAULT)).strip()
+    api_token = str(saved.get("api_token") or get_env("ZABBIX_API_TOKEN", ZABBIX_API_TOKEN_DEFAULT)).strip()
+    verify_ssl = saved.get("verify_ssl")
+    if verify_ssl is None:
+        verify_ssl = zabbix_verify_ssl(None)
+    return {
+        "url": url,
+        "api_token": api_token,
+        "verify_ssl": bool(verify_ssl),
+        "source": "file" if saved else "env",
+    }
+
+
+def _save_zabbix_config(payload: ZabbixConfigSaveRequest) -> dict[str, Any]:
+    item = {
+        "url": str(payload.url or "").strip(),
+        "api_token": str(payload.api_token or "").strip(),
+        "verify_ssl": bool(payload.verify_ssl),
+    }
+    ZABBIX_CONFIG_FILE.write_text(json.dumps(item, ensure_ascii=False, indent=2), encoding="utf-8")
+    return item
+
+
+def _delete_zabbix_config() -> None:
+    try:
+        ZABBIX_CONFIG_FILE.unlink()
+    except FileNotFoundError:
+        return
+
+
 def load_dotenv_file(path: str) -> None:
     p = Path(path)
     if not p.exists():
@@ -106,7 +161,7 @@ def get_env(name: str, default: str = "") -> str:
 
 
 def zabbix_api_url(url_override: str | None = None) -> str:
-    base = str(url_override or get_env("ZABBIX_URL", ZABBIX_URL_DEFAULT)).strip().rstrip("/")
+    base = str(url_override or _effective_zabbix_config().get("url") or "").strip().rstrip("/")
     if not base:
         return ""
     if base.endswith("/api_jsonrpc.php"):
@@ -115,7 +170,7 @@ def zabbix_api_url(url_override: str | None = None) -> str:
 
 
 def zabbix_api_url_candidates(url_override: str | None = None) -> list[str]:
-    raw = str(url_override or get_env("ZABBIX_URL", ZABBIX_URL_DEFAULT)).strip()
+    raw = str(url_override or _effective_zabbix_config().get("url") or "").strip()
     if not raw:
         return []
     base = raw.rstrip("/")
@@ -148,12 +203,15 @@ def zabbix_api_url_candidates(url_override: str | None = None) -> list[str]:
 
 
 def zabbix_api_token(token_override: str | None = None) -> str:
-    return str(token_override or get_env("ZABBIX_API_TOKEN", ZABBIX_API_TOKEN_DEFAULT)).strip()
+    return str(token_override or _effective_zabbix_config().get("api_token") or "").strip()
 
 
 def zabbix_verify_ssl(verify_ssl_override: bool | None = None) -> bool:
     if isinstance(verify_ssl_override, bool):
         return verify_ssl_override
+    saved = _read_saved_zabbix_config()
+    if "verify_ssl" in saved:
+        return bool(saved.get("verify_ssl"))
     raw = get_env("ZABBIX_VERIFY_SSL", "false").lower()
     return raw in {"1", "true", "yes", "on"}
 
@@ -1769,6 +1827,9 @@ class LinkUtilTarget(BaseModel):
     source_interface: str
     util_key: str | None = None
     source_name: str | None = None
+    peer_device: str | None = None
+    peer_interface: str | None = None
+    peer_name: str | None = None
 
 
 class LinkUtilRequest(BaseModel):
@@ -2796,8 +2857,24 @@ def collect_zabbix_link_utilization(
         t for t in (targets or [])
         if _looks_like_ip(str(t.source_device or "").strip()) and str(t.source_interface or "").strip()
     ]
-    device_ips = sorted({str(t.source_device).strip() for t in cleaned_targets})
-    source_names = sorted({str(t.source_name or "").strip() for t in cleaned_targets if str(t.source_name or "").strip()})
+    device_ips = sorted({
+        ip for ip in (
+            str(t.source_device or "").strip() for t in cleaned_targets
+        ) if ip
+    } | {
+        ip for ip in (
+            str(t.peer_device or "").strip() for t in cleaned_targets
+        ) if _looks_like_ip(ip)
+    })
+    source_names = sorted({
+        name for name in (
+            str(t.source_name or "").strip() for t in cleaned_targets
+        ) if name
+    } | {
+        name for name in (
+            str(t.peer_name or "").strip() for t in cleaned_targets
+        ) if name
+    })
     host_map = _zabbix_get_host_map_by_ip(
         device_ips,
         url_override=zabbix_url,
@@ -2821,6 +2898,9 @@ def collect_zabbix_link_utilization(
         iface = str(target.source_interface or "").strip()
         util_key = str(target.util_key or "").strip()
         source_name = str(target.source_name or "").strip()
+        peer_ip = str(target.peer_device or "").strip()
+        peer_iface = str(target.peer_interface or "").strip()
+        peer_name = str(target.peer_name or "").strip()
         host, items, tx_item, rx_item, speed_item = _pick_best_zabbix_host_for_target(
             src_ip,
             source_name,
@@ -2913,6 +2993,34 @@ def collect_zabbix_link_utilization(
             )
             if isinstance(bw_bps, (int, float)) and bw_bps > 0:
                 bandwidth_cache[(src_ip, iface)] = float(bw_bps)
+        if not (isinstance(bw_bps, (int, float)) and bw_bps > 0) and _looks_like_ip(peer_ip) and peer_iface:
+            bw_bps = bandwidth_cache.get((peer_ip, peer_iface))
+            if not (isinstance(bw_bps, (int, float)) and bw_bps > 0):
+                peer_host, peer_items, _peer_tx_item, _peer_rx_item, peer_speed_item = _pick_best_zabbix_host_for_target(
+                    peer_ip,
+                    peer_name,
+                    peer_iface,
+                    host_map_by_ip=host_map,
+                    host_map_by_name=host_map_by_name,
+                    item_cache=item_cache,
+                    url_override=zabbix_url,
+                    token_override=zabbix_api_token,
+                    verify_ssl_override=zabbix_verify_ssl,
+                )
+                if peer_host:
+                    bw_bps = _zabbix_speed_bps_with_fallback(
+                        peer_speed_item,
+                        time_mode=mode,
+                        time_from=int(time_from) if mode in {"range_max", "range_min"} and time_from is not None else None,
+                        time_till=int(time_till) if mode in {"range_max", "range_min"} and time_till is not None else None,
+                        cache=speed_cache,
+                        url_override=zabbix_url,
+                        token_override=zabbix_api_token,
+                        verify_ssl_override=zabbix_verify_ssl,
+                    )
+                    if isinstance(bw_bps, (int, float)) and bw_bps > 0:
+                        bandwidth_cache[(peer_ip, peer_iface)] = float(bw_bps)
+                        bandwidth_cache[(src_ip, iface)] = float(bw_bps)
         tx_pct = (tx_bps / bw_bps * 100.0) if (tx_bps is not None and bw_bps and bw_bps > 0) else None
         rx_pct = (rx_bps / bw_bps * 100.0) if (rx_bps is not None and bw_bps and bw_bps > 0) else None
         if metric_l == "tx":
@@ -2932,6 +3040,8 @@ def collect_zabbix_link_utilization(
             err_parts.append("rx item not found")
         if not speed_item:
             err_parts.append("speed item not found")
+        if (not speed_item) and isinstance(bw_bps, (int, float)) and bw_bps > 0 and _looks_like_ip(peer_ip) and peer_iface:
+            err_parts.append("peer speed fallback")
         if mode in {"range_max", "range_min"}:
             if tx_item and tx_bps is None:
                 err_parts.append("tx history not found in selected time window")
@@ -4290,6 +4400,23 @@ def get_sql_config_defaults() -> dict[str, Any]:
         "ok": True,
         **cfg,
     }
+
+
+@app.get("/api/zabbix/config")
+def get_zabbix_config() -> dict[str, Any]:
+    return {"ok": True, **_effective_zabbix_config()}
+
+
+@app.post("/api/zabbix/config")
+def save_zabbix_config(payload: ZabbixConfigSaveRequest) -> dict[str, Any]:
+    item = _save_zabbix_config(payload)
+    return {"ok": True, **item, "source": "file"}
+
+
+@app.delete("/api/zabbix/config")
+def delete_zabbix_config() -> dict[str, Any]:
+    _delete_zabbix_config()
+    return {"ok": True}
 
 
 @app.get("/api/sql/lldp-csv/tasks/{task_id}")
